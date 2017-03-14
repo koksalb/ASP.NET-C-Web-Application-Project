@@ -7,11 +7,12 @@
     <title></title>
     <style type="text/css">
         #form1 {
-            width: 513px;
-            height: 510px;
+            width: 721px;
+            height: 519px;
         }
         .auto-style1 {
             text-align: right;
+            width: 50%;
         }
         .auto-style2 {
             font-weight: bold;
@@ -28,6 +29,9 @@
         #addmail {
             text-align: center;
         }
+        .auto-style3 {
+            width: 50%;
+        }
     </style>
 </head>
 <body>
@@ -37,7 +41,7 @@
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:maillistconnectionstring %>" SelectCommand="SELECT * FROM [maillist]"></asp:SqlDataSource>
     
     </div>
-        <asp:GridView ID="maillistgrid" runat="server" AllowPaging="True" AutoGenerateColumns="False" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" DataKeyNames="Email" DataSourceID="SqlDataSource1" GridLines="Vertical">
+        <asp:GridView ID="maillistgrid" runat="server" AllowPaging="True" AutoGenerateColumns="False" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" DataKeyNames="Email" DataSourceID="SqlDataSource1" GridLines="Vertical" OnSelectedIndexChanged="maillistgrid_SelectedIndexChanged" Width="100%">
             <AlternatingRowStyle BackColor="#DCDCDC" />
             <Columns>
                 <asp:CommandField ShowSelectButton="True" />
@@ -56,8 +60,11 @@
             <SortedDescendingHeaderStyle BackColor="#000065" />
         </asp:GridView>
         <br />
-        <br />
-        <div class="auto-style1" style="height: 137px; width: 401px">
+        <table style="width:100%;">
+            <tr>
+                <td class="auto-style3">
+                     <br />
+        <div class="auto-style1" style="height: 137px; width: 294px">
             <asp:Label ID="Label1" runat="server" CssClass="auto-style2" Text="Name(optional)" Width="150px"></asp:Label>
 &nbsp;&nbsp;
             <input id="Txt_name" dir="ltr" type="text" runat="server"/><br />
@@ -66,9 +73,28 @@
             <input id="Txt_Surname" dir="ltr" type="text" runat="server"/><br />
             <asp:Label ID="Label3" runat="server" CssClass="auto-style2" Text="E-mail" Width="150px"></asp:Label>
 &nbsp;&nbsp;
-            <input id="Txt_mail" dir="ltr" required="required" type="email" runat="server"/><br />
+            <input id="Txt_mail" dir="ltr" type="email" runat="server"/><br />
             <asp:Button ID="Button_Insert" runat="server" Text="Insert" OnClick="Button_Insert_Click" />
         </div>
+
+                </td>
+                &nbsp;&nbsp;
+                <td class="auto-style1">
+                    <br />
+
+                    <asp:Label ID="Txt_mail_todelete" runat="server" CssClass="auto-style2" Text="E-mail to delete" Width="70%"></asp:Label>
+                    &nbsp;
+                    <asp:Button ID="Button_Delete" runat="server" Text="Delete" OnClick="Button_Delete_Click"  Width="20%" Enabled="False"/>
+                    <br />
+                </td>
+            </tr>
+            
+            
+        </table>
+       
+        <br />
+        <asp:Button ID="Button_Send_Email" runat="server" Height="65px" Text="SEND EMAIL" Width="100%" BackColor="#009933" BorderColor="Yellow" BorderStyle="Groove" BorderWidth="5px" ForeColor="#003366" OnClick="Button_Send_Email_Click" style="font-weight: 700; font-size: xx-large" />
+       
     </form>
 </body>
 </html>
