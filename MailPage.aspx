@@ -93,7 +93,7 @@
         </table>
        
         <br />
-        <asp:Button ID="Button_Send_Email" runat="server" Height="65px" Text="SEND EMAIL" Width="100%" BackColor="#009933" BorderColor="Yellow" BorderStyle="Groove" BorderWidth="5px" ForeColor="#003366" OnClick="Button_Send_Email_Click" style="font-weight: 700; font-size: xx-large" />
+        <asp:Button ID="Button_Send_Email" runat="server" Height="60px" Text="SEND EMAIL" Width="100%" BackColor="#009933" BorderColor="Yellow" BorderStyle="Groove" BorderWidth="5px" ForeColor="#003366" OnClick="Button_Send_Email_Click" style="font-weight: 700; font-size: xx-large" />
        
     </form>
 </body>

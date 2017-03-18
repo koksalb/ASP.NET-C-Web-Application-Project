@@ -76,7 +76,7 @@ public partial class MailPage : System.Web.UI.Page
         sc.Port = 587;
         sc.Host = "smtp.gmail.com";
         sc.EnableSsl = true;
-        sc.Credentials = new NetworkCredential("integramhd@gmail.com", "passwordwillcomehere");//TODO: edit the password before using
+        sc.Credentials = new NetworkCredential("integramhd@gmail.com", "b4momkktm");//TODO: edit the password before using
         MailMessage mail = new MailMessage();
         mail.From = new MailAddress("integramhd@gmail.com", "Lunch Planner 9000+");
 

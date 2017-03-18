@@ -38,5 +38,15 @@
     
     </div>
     </form>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        <input id="File1" type="file" /></p>
 </body>
 </html>
