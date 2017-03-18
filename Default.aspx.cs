@@ -14,8 +14,37 @@ using System.Drawing;
 using System.IO;
 using System.Web.UI.HtmlControls;
 
+
 public partial class _Default : Page
 {
+    List<restaurant> list = new List<restaurant>();
+    public class restaurant
+    {
+
+        public int Id { get; set; }
+
+        public String Place_Name { get; set; }
+
+        public Boolean Affectedfromweather { get; set; }
+
+        public DateTime Latest_Visit_Date { get; set; }
+
+        public int Total_Visits_This_Month { get; set; }
+
+        public Boolean CarorWalk { get; set; }
+
+        public int Total_People_Voted { get; set; }
+
+        public int Total_Votes { get; set; }
+
+        public double Average_Vote { get; set; }
+
+        public int Expected_Visits_This_Month { get; set; }
+
+        public int Days_Since_Last_Visit { get; set; }
+
+    }
+   
     protected void Page_Load(object sender, EventArgs e)
     {
         
@@ -39,8 +68,66 @@ public partial class _Default : Page
             tblWeather.Visible = true;
 
         }
+
+
+        
+
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RestaurantsConnectionString"].ConnectionString);
+        conn.Open();
+        string testquery = "select * from Restaurants" +
+
+                            " where " +
+
+                            "Days_Since_Last_Visit > 1" +
+
+                            " and " +
+
+                            "(Expected_Visits_This_Month-Total_Visits_This_Month) >= 0"
+
+
+            ;
+
+        SqlCommand com = new SqlCommand(testquery, conn);
+        using (var command = com.ExecuteReader())
+        {
+            while (command.Read())
+            {
+                restaurant temp = new restaurant();
+                temp.Id = command.GetInt32(0);
+                temp.Place_Name = command.GetString(1);
+                temp.Affectedfromweather = command.GetBoolean(2);
+                temp.Latest_Visit_Date = command.GetDateTime(3);
+                temp.Total_Visits_This_Month = command.GetInt32(4);
+                temp.CarorWalk = command.GetBoolean(5);
+                temp.Total_People_Voted = command.GetInt32(6);
+                temp.Total_Votes=command.GetInt32(7);
+                temp.Average_Vote = command.GetDouble(8);
+                temp.Days_Since_Last_Visit=command.GetInt32(9);
+                temp.Expected_Visits_This_Month = command.GetInt32(10);
+                list.Add(temp);
+
+
+            }
+        }
+        conn.Close();
+
+
+
     }
 
+    protected void UpdateDatabaseWithTheList(List<restaurant> liste)
+    {
+
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RestaurantsConnectionString"].ConnectionString);
+        conn.Open();
+        string testquery = "delete from Restaurants where id=id";
+        SqlCommand com = new SqlCommand(testquery, conn);
+        var command = com.ExecuteReader();
+        GridView1.DataBind();
+            
+
+
+    }
 
     protected void Button_Insert_Click(object sender, EventArgs e)
     {
@@ -183,18 +270,7 @@ public partial class _Default : Page
 
     protected void Export_Excel(object sender, EventArgs e)
     {
-        /*
-        System.IO.StringWriter sw = new System.IO.StringWriter();
-        System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
-
-        // Render grid view control.
-        GridView1.RenderControl(htw);
-
-        // Write the rendered content to a file.
-        string renderedGridView = sw.ToString();
-        System.IO.File.WriteAllText(@"C:\Path\On\Server\ExportedFile.xlsx", renderedGridView);
-
-        */
+        
         Response.Clear();
         Response.Buffer = true;
         Response.ClearContent();
