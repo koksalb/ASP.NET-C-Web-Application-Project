@@ -15,6 +15,7 @@ using System.IO;
 using System.Web.UI.HtmlControls;
 using System.Text.RegularExpressions;
 
+
 public partial class _Default : Page
 {
     List<restaurant> list = new List<restaurant>();
@@ -342,6 +343,33 @@ public partial class _Default : Page
         GridView1.AllowSorting = true;
 
 
+    }
+
+    protected void btnUpload_Click(object sender, EventArgs e)
+    {
+        if (FileUpload1.HasFile)
+        {
+            string FileName = Path.GetFileName(FileUpload1.PostedFile.FileName);
+            string Extension = Path.GetExtension(FileUpload1.PostedFile.FileName);
+            string FolderPath = ConfigurationManager.AppSettings["FolderPath"];
+
+            string FilePath = Server.MapPath(FolderPath + FileName);
+            FileUpload1.SaveAs(FilePath);
+
+            string conStr = "";
+            switch (Extension)
+            {
+                case ".xls": //Excel 97-03
+                    conStr = ConfigurationManager.ConnectionStrings["Excel03ConString"]
+                             .ConnectionString;
+                    break;
+                case ".xlsx": //Excel 07
+                    conStr = ConfigurationManager.ConnectionStrings["Excel07ConString"]
+                              .ConnectionString;
+                    break;
+            }
+            conStr = String.Format(conStr, FilePath, false);
+        }
     }
     
 }

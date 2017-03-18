@@ -10,7 +10,7 @@
     -->
     <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <body>
     
@@ -197,6 +197,17 @@
 
         </div>
           </div>
+    <div style="border-width:50px; border-color:green; width:300px; margin-right: 0px;">
+        <br />
+        <br />
+        <label>Upload a file to update ratings.</label>
+        <br />
+        <asp:FileUpload ID="FileUpload1" runat="server" />
+<asp:Button ID="btnUpload" runat="server" Text="Upload"
+            OnClick="btnUpload_Click" /></div>
+    
+    <br />
+    
         </body>
     </html>
 </asp:Content>
