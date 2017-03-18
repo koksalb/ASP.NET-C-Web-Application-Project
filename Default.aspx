@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" EnableEventValidation="false" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <!--
@@ -8,6 +8,12 @@
         <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
     </div>
     -->
+    <!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<body>
+    
     <div class="row">
         <div class="col-md-12">
             <h2>Places Database</h2> 
@@ -38,20 +44,23 @@
             <SortedDescendingCellStyle BackColor="#F1E5CE" />
             <SortedDescendingHeaderStyle BackColor="#93451F" />
         </asp:GridView>
-    
+
+
+     <br />
+        <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" />
+        <br />
     </div>
             
         </div>
+        
+
         </div>
      <div class="row">
         <div class="col-md-6">
             <h2>Mail Page</h2>
             
             <style type="text/css">
-        #form1 {
-            width: 721px;
-            height: 519px;
-        }
+
         .auto-style1 {
             text-align: right;
             width: 50%;
@@ -188,4 +197,6 @@
 
         </div>
           </div>
+        </body>
+    </html>
 </asp:Content>

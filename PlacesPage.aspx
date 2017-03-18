@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="PlacesPage.aspx.cs" Inherits="PlacesPage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="PlacesPage.aspx.cs" Inherits="PlacesPage" EnableEventValidation="false"%>
 
 <!DOCTYPE html>
 
@@ -36,6 +36,9 @@
             <SortedDescendingHeaderStyle BackColor="#93451F" />
         </asp:GridView>
     
+        <br />
+        <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" />
+        <br />
     </div>
     </form>
     <p>

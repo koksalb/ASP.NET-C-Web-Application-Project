@@ -9,11 +9,16 @@ using System.Configuration;
 using System.Net.Mail;
 using System.Net;
 using System.Web.Script.Serialization;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Web.UI.HtmlControls;
+
 public partial class _Default : Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        
         //set weather first
         string appId = "a8210c3d0e052d04991c174e73ec64b0";
         string url = string.Format("http://api.openweathermap.org/data/2.5/forecast/daily?q={0}&units=metric&cnt=1&APPID={1}", "Istanbul", appId);
@@ -169,4 +174,60 @@ public partial class _Default : Page
         public int humidity { get; set; }
         public List<Weather> weather { get; set; }
     }
+    public override void VerifyRenderingInServerForm(Control control)
+    {
+        /* Confirms that an HtmlForm control is rendered for the specified ASP.NET
+           server control at run time. */
+        return;
+    }
+
+    protected void Export_Excel(object sender, EventArgs e)
+    {
+        /*
+        System.IO.StringWriter sw = new System.IO.StringWriter();
+        System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
+
+        // Render grid view control.
+        GridView1.RenderControl(htw);
+
+        // Write the rendered content to a file.
+        string renderedGridView = sw.ToString();
+        System.IO.File.WriteAllText(@"C:\Path\On\Server\ExportedFile.xlsx", renderedGridView);
+
+        */
+        Response.Clear();
+        Response.Buffer = true;
+        Response.ClearContent();
+        Response.ClearHeaders();
+        Response.Charset = "";
+        string FileName = "RestausantsExcel_" + DateTime.Now + ".xls";
+        StringWriter strwritter = new StringWriter();
+        
+        HtmlTextWriter htmltextwrtter = new HtmlTextWriter(strwritter);
+        
+
+
+        Response.Cache.SetCacheability(HttpCacheability.NoCache);
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.AddHeader("Content-Disposition", "attachment;filename=" + FileName);
+        HtmlForm form1 = new HtmlForm();
+        Page.Controls.Add(form1);
+
+
+
+        GridView1.GridLines = GridLines.Both;
+        GridView1.HeaderStyle.Font.Bold = true;
+        GridView1.AllowPaging = false;
+        GridView1.AllowSorting = false;
+        form1.Controls.Add(GridView1);
+
+        form1.RenderControl(htmltextwrtter);
+        Response.Write(strwritter.ToString());
+        Response.End();
+        GridView1.AllowPaging = true;
+        GridView1.AllowSorting = true;
+
+
+    }
+    
 }

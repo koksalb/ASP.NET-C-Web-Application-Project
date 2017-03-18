@@ -6,7 +6,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Configuration;
-
+using System.Data;
+using System.Drawing;
+using System.IO;
 public partial class PlacesPage : System.Web.UI.Page
 {
 
@@ -96,6 +98,60 @@ public partial class PlacesPage : System.Web.UI.Page
             conn.Close();
 
        // }
+
+
+    }
+
+
+    public override void VerifyRenderingInServerForm(Control control)
+    {
+        /* Confirms that an HtmlForm control is rendered for the specified ASP.NET
+           server control at run time. */
+        return;
+    }
+
+    protected void Export_Excel(object sender, EventArgs e)
+    {
+        /*
+        System.IO.StringWriter sw = new System.IO.StringWriter();
+        System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
+
+        // Render grid view control.
+        GridView1.RenderControl(htw);
+
+        // Write the rendered content to a file.
+        string renderedGridView = sw.ToString();
+        System.IO.File.WriteAllText(@"C:\Path\On\Server\ExportedFile.xlsx", renderedGridView);
+
+        */
+
+        Response.Clear();
+        Response.Buffer = true;
+        Response.ClearContent();
+        Response.ClearHeaders();
+        Response.Charset = "";
+        string FileName = "Vithal" + DateTime.Now + ".xls";
+        StringWriter strwritter = new StringWriter();
+        HtmlTextWriter htmltextwrtter = new HtmlTextWriter(strwritter);
+
+
+
+        Response.Cache.SetCacheability(HttpCacheability.NoCache);
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.AddHeader("Content-Disposition", "attachment;filename=" + FileName);
+
+        Page.Controls.Add(form1);
+        
+
+
+        GridView1.GridLines = GridLines.Both;
+        GridView1.HeaderStyle.Font.Bold = true;
+
+        form1.Controls.Add(GridView1);
+
+        form1.RenderControl(htmltextwrtter);
+        Response.Write(strwritter.ToString());
+        Response.End();
 
 
     }
