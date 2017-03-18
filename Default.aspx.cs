@@ -346,7 +346,7 @@ public partial class _Default : Page
 
     }
 
-<<<<<<< HEAD
+
     protected void btnUpload_Click(object sender, EventArgs e)
     {
         if (FileUpload1.HasFile)
@@ -374,7 +374,7 @@ public partial class _Default : Page
         }
     }
     
-=======
+
     protected void Initialise_New_Month(object sender, EventArgs e)
     {
         var now = DateTime.Now;
@@ -398,5 +398,5 @@ public partial class _Default : Page
         }
         UpdateDatabaseWithTheList(list);
     }
->>>>>>> origin/master
+
 }
