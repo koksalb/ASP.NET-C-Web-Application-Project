@@ -15,8 +15,7 @@
 <body>
     
     <div class="row">
-        <div class="col-md-12">
-            <h2>Places Database</h2> 
+        <divPlaces Database</h2> 
              <div style="height: 100%; width: 100%">
     
         <asp:SqlDataSource ID="SqlDataSource_Restaurants" runat="server" ConnectionString="<%$ ConnectionStrings:RestaurantsConnectionString %>" SelectCommand="SELECT * FROM [Restaurants]"></asp:SqlDataSource>
@@ -48,7 +47,8 @@
 
      <br />
         <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" />
-        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <asp:Button ID="New_Month" runat="server" Text="Start New Month" OnClick="Initialise_New_Month" />
     </div>
             
         </div>

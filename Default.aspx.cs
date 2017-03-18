@@ -39,7 +39,7 @@ public partial class _Default : Page
 
         public double Average_Vote { get; set; }
 
-        public int Expected_Visits_This_Month { get; set; }
+        public double Expected_Visits_This_Month { get; set; }
 
         public int Days_Since_Last_Visit { get; set; }
 
@@ -91,8 +91,9 @@ public partial class _Default : Page
                 temp.Total_People_Voted = command.GetInt32(6);
                 temp.Total_Votes=command.GetInt32(7);
                 temp.Average_Vote = command.GetDouble(8);
-                temp.Days_Since_Last_Visit=command.GetInt32(9);
-                temp.Expected_Visits_This_Month = command.GetInt32(10);
+                temp.Expected_Visits_This_Month = command.GetDouble(9);
+                temp.Days_Since_Last_Visit=command.GetInt32(10);
+                
                 list.Add(temp);
 
 
@@ -147,12 +148,12 @@ public partial class _Default : Page
                 testquery2 = testquery2 + "0" + ",";
             }
 
-            
+            double averagevote = (double)list.ElementAt(i).Total_Votes / list.ElementAt(i).Total_People_Voted;
             testquery2 +=
                   list.ElementAt(i).Total_People_Voted+","+
                    list.ElementAt(i).Total_Votes+","+
-                   Regex.Replace( list.ElementAt(i).Average_Vote.ToString(), @",", ".")+","+
-                     list.ElementAt(i).Expected_Visits_This_Month+","+
+                   Regex.Replace(averagevote.ToString(), @",", ".") + "," +
+                   Regex.Replace(list.ElementAt(i).Expected_Visits_This_Month.ToString(), @",", ".") + "," +
                       list.ElementAt(i).Days_Since_Last_Visit+");"
                      
                 ;
@@ -343,5 +344,28 @@ public partial class _Default : Page
 
 
     }
-    
+
+    protected void Initialise_New_Month(object sender, EventArgs e)
+    {
+        var now = DateTime.Now;
+        var first = new DateTime(now.Year, now.Month, 1);
+        var start = first.AddMonths(-1);
+        var last = first.AddMonths(1);
+        double howmanydays = (last - first).TotalDays;
+
+        double totalvote = 0;
+        for (int i = 0; i < list.Count; i++)
+        {
+            list.ElementAt(i).Total_Visits_This_Month = 0;
+            list.ElementAt(i).Latest_Visit_Date = start;
+            list.ElementAt(i).Days_Since_Last_Visit = (int)(now - start).TotalDays;
+            totalvote += list.ElementAt(i).Total_Votes;
+        }
+        for (int i = 0; i < list.Count; i++)
+        {
+            list.ElementAt(i).Expected_Visits_This_Month = howmanydays*list.ElementAt(i).Total_Votes / totalvote;
+
+        }
+        UpdateDatabaseWithTheList(list);
+    }
 }
