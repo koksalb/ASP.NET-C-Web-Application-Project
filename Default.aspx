@@ -15,7 +15,7 @@
 <body>
     
     <div class="row">
-        <divPlaces Database</h2> 
+        <h2> Places Database</h2> 
              <div style="height: 100%; width: 100%">
     
         <asp:SqlDataSource ID="SqlDataSource_Restaurants" runat="server" ConnectionString="<%$ ConnectionStrings:RestaurantsConnectionString %>" SelectCommand="SELECT * FROM [Restaurants]"></asp:SqlDataSource>
