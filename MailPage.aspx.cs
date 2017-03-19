@@ -62,58 +62,6 @@ public partial class MailPage : System.Web.UI.Page
         Txt_mail_todelete.Text = maillistgrid.SelectedRow.Cells[3].Text;
         Button_Delete.Enabled = true;
     }
-    protected void Button_Send_Email_Click(object sender, EventArgs e)
-    {
-        /*
-       var client = new SmtpClient("smtp.gmail.com", 587)
-            {
-                Credentials = new NetworkCredential("integramhd@gmail.com", "b4momkktm"),
-                EnableSsl = true
-            };
-       client.Send("koksalb@itu.edu.tr", "koksalb@itu.edu.tr", "Your Lunch Program", "Test string for the email is set\nhere!");
-       */
-        SmtpClient sc = new SmtpClient();
-        sc.Port = 587;
-        sc.Host = "smtp.gmail.com";
-        sc.EnableSsl = true;
-        sc.Credentials = new NetworkCredential("integramhd@gmail.com", "b4momkktm");//TODO: edit the password before using
-        MailMessage mail = new MailMessage();
-        mail.From = new MailAddress("integramhd@gmail.com", "Lunch Planner 9000+");
-
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["maillistconnectionstring"].ConnectionString);
-        conn.Open();
-        string testquery = "SELECT EMAIL FROM maillist";
-        SqlCommand com = new SqlCommand(testquery, conn);
-
-
-        var list = new List<String>();
-
-        using (var command = com.ExecuteReader())
-        {
-            while (command.Read())
-            {
-                list.Add(command.GetString(0));
-            }
-        }
-
-        conn.Close();
-
-
-        for (int i = 0; i < list.Count;i++ )
-        {
-            mail.To.Add(list.ElementAt(i));
-
-        }
-
-           
-        mail.CC.Add("integramhd@gmail.com");
-        mail.Subject = "Your Lunch Program";
-        mail.IsBodyHtml = false;
-        mail.Body = "test string to try the code";
-        sc.Send(mail);
-
-            Response.Write("SENT");
-            
-    }
+   
     
 }
