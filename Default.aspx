@@ -46,6 +46,16 @@
 
 
      <br />
+                 <asp:Label ID="Labelweather" runat="server" Text="Label"></asp:Label>
+                 <br />
+                 <asp:Label ID="Labelcarorwalk" runat="server" Text="Label"></asp:Label>
+                 <br />
+                 <asp:Label ID="Labelexpected" runat="server" Text="Label"></asp:Label>
+                 <br />
+                 <asp:Label ID="Labelnoproblem" runat="server" Text="Label"></asp:Label>
+                 <br />
+                 <br />
+                 
         <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Button ID="New_Month" runat="server" Text="Start New Month" OnClick="Initialise_New_Month" />
@@ -161,7 +171,6 @@
         </table>
        
         <br />
-        <asp:Button ID="Button_Send_Email" runat="server" Height="60px" Text="SEND EMAIL" Width="100%" BackColor="#009933" BorderColor="Yellow" BorderStyle="Groove" BorderWidth="5px" ForeColor="#003366" OnClick="Button_Send_Email_Click" style="font-weight: 700; font-size: xx-large" />
        
         </div>
         

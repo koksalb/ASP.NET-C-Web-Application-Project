@@ -21,6 +21,7 @@ public partial class _Default : Page
     List<restaurant> list = new List<restaurant>();
     Boolean weather;//false if it is good, true if it is not good meaning there is a weather problem!
     deletionreasons reasons = new deletionreasons();
+    restaurant chosen = new restaurant();
 
     public class deletionreasons
     {
@@ -219,16 +220,9 @@ public partial class _Default : Page
         Txt_mail_todelete.Text = maillistgrid.SelectedRow.Cells[3].Text;
         Button_Delete.Enabled = true;
     }
-    protected void Button_Send_Email_Click(object sender, EventArgs e)
+    protected void send_email()
     {
-        /*
-       var client = new SmtpClient("smtp.gmail.com", 587)
-            {
-                Credentials = new NetworkCredential("integramhd@gmail.com", "b4momkktm"),
-                EnableSsl = true
-            };
-       client.Send("koksalb@itu.edu.tr", "koksalb@itu.edu.tr", "Your Lunch Program", "Test string for the email is set\nhere!");
-       */
+        
         SmtpClient sc = new SmtpClient();
         sc.Port = 587;
         sc.Host = "smtp.gmail.com";
@@ -266,10 +260,20 @@ public partial class _Default : Page
         mail.CC.Add("integramhd@gmail.com");
         mail.Subject = "Your Lunch Program";
         mail.IsBodyHtml = false;
-        mail.Body = "test string to try the code";
+
+        String emailbody = "";
+        emailbody += "Today you are going to: " + chosen.Place_Name+"\n\n\n";
+
+        emailbody += Labelweather.Text + "\n" + Labelcarorwalk.Text + "\n" + Labelexpected.Text + "\n" + Labelnoproblem.Text + "\n";
+
+        emailbody += "Thank you for using our program!\n Bon appetit! :)";
+
+
+
+        mail.Body = emailbody;
         sc.Send(mail);
 
-        Response.Write("SENT");
+        
 
     }
 
@@ -422,7 +426,7 @@ public partial class _Default : Page
             return;
         }
 
-        restaurant chosen = new restaurant();
+        chosen = new restaurant();
 
 
         restaurant yesterday = new restaurant();
@@ -498,8 +502,9 @@ public partial class _Default : Page
         //ONE: NO WEATHER LIMITATION!
         if(list.Count==0)
         {
-            Response.Clear();
-            Response.Write("NOT ENOUGH RESTAURANTS TO CHOOSE! Stage 1: Removing weather condition");
+            reasons = new deletionreasons();
+            reasons.weatherdeletes.Add("There was no restaurant to go so I removed the weather limitation.");
+            
             ReadListFromDatabase(list);
             if (yesterday.CarorWalk == false || daybeforeyesterday.CarorWalk == false)
             {
@@ -532,8 +537,9 @@ public partial class _Default : Page
         //TWO: NO WEATHER LIMITATION & NO CAR LIMITATION!
         if (list.Count == 0)
         {
-            Response.Clear();
-            Response.Write("NOT ENOUGH RESTAURANTS TO CHOOSE! Stage 2: Removing car transportation condition");
+            reasons = new deletionreasons();
+            reasons.weatherdeletes.Add("There was no restaurant to go so I removed the weather limitation.");
+            reasons.carorwalkdeletes.Add("There was no restaurant to go so I removed the car or walk limitation.");
             ReadListFromDatabase(list);        
             for (int i = 0; i < list.Count; i++)
             {
@@ -582,8 +588,11 @@ public partial class _Default : Page
         //THREE: NO WEATHER LIMITATION & NO CAR LIMITATION & NO EXPECTED DAY LIMITATION!
         if (list.Count == 0)
         {
-            Response.Clear();
-            Response.Write("NOT ENOUGH RESTAURANTS TO CHOOSE! Stage 3: Removing every condition");
+            reasons = new deletionreasons();
+            reasons.weatherdeletes.Add("There was no restaurant to go so I removed the weather limitation.");
+            reasons.carorwalkdeletes.Add("There was no restaurant to go so I removed the car or walk limitation.");
+            reasons.expectedlimitreacheddeletes.Add("There was no restaurant to go so I removed the expected day limitation.");
+
             ReadListFromDatabase(list);
 
             for (int i = 0; i < list.Count; i++)
@@ -620,7 +629,7 @@ public partial class _Default : Page
         }
         
 
-
+        /*
         GridView2.Visible = true;
         GridView2.DataSource = list;
         GridView2.DataBind();
@@ -630,9 +639,9 @@ public partial class _Default : Page
            {
                GridView2.SelectedIndex = i;
                break;
-           }
-           
+           }        
        }
+        */
 
        ReadListFromDatabase(list);
        for (int i = 0; i < list.Count; i++)
@@ -650,9 +659,66 @@ public partial class _Default : Page
            }
        }
 
+        string temp = "Deleted because of weather conditions: ";
+        for(int i=0;i<reasons.weatherdeletes.Count;i++)
+        {
+            if(i!=reasons.weatherdeletes.Count-1)
+            {
+            temp += reasons.weatherdeletes.ElementAt(i)+", ";
+            }
+            else
+            {
+            temp += reasons.weatherdeletes.ElementAt(i);
+            }
+        }
+        Labelweather.Text = temp;
+
+        temp = "Deleted because of carorwalk conditions: ";
+        for(int i=0;i<reasons.carorwalkdeletes.Count;i++)
+        {
+            if(i!=reasons.carorwalkdeletes.Count-1)
+            {
+            temp += reasons.carorwalkdeletes.ElementAt(i)+", ";
+            }
+            else
+            {
+            temp += reasons.carorwalkdeletes.ElementAt(i);
+            }
+        }
+        Labelcarorwalk.Text = temp;
+
+        temp = "Deleted because of expected date limitations: ";
+        for(int i=0;i<reasons.expectedlimitreacheddeletes.Count;i++)
+        {
+            if(i!=reasons.expectedlimitreacheddeletes.Count-1)
+            {
+            temp += reasons.expectedlimitreacheddeletes.ElementAt(i)+", ";
+            }
+            else
+            {
+            temp += reasons.expectedlimitreacheddeletes.ElementAt(i);
+            }
+        }
+        Labelexpected.Text = temp;
+
+        temp = "You can go to one of these with no problem: ";
+        for(int i=0;i<reasons.noproblems.Count;i++)
+        {
+            if(i!=reasons.noproblems.Count-1)
+            {
+            temp += reasons.noproblems.ElementAt(i)+", ";
+            }
+            else
+            {
+            temp += reasons.noproblems.ElementAt(i);
+            }
+        }
+        Labelnoproblem.Text = temp;
+
+
        UpdateDatabaseWithTheList(list);
 
-
+       send_email();
 
 
     }
