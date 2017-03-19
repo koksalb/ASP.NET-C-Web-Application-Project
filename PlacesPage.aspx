@@ -36,20 +36,23 @@
             <SortedDescendingHeaderStyle BackColor="#93451F" />
         </asp:GridView>
     
-        <br />
-        <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" />
-        <br />
+        
     </div>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
+    <p>
+       <input id="File1" type="file" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <asp:Button ID="Button2" runat="server" Text="Import Excel File" OnClick="Import_Excel" /> &nbsp;&nbsp;&nbsp;&nbsp; <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" /></p>
+    <p>
+        &nbsp;</p>
+    <p>
+        <asp:Button ID="New_Month" runat="server" Text="Start New Month" OnClick="New_Month_Click" />
+        </p> 
     </form>
-    <p>
-        &nbsp;</p>
-    <p>
-        &nbsp;</p>
-    <p>
-        &nbsp;</p>
-    <p>
-        &nbsp;</p>
-    <p>
-        <input id="File1" type="file" /></p>
-</body>
+    </body>
 </html>
