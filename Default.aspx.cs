@@ -101,8 +101,12 @@ public partial class _Default : Page
 
 
 
-        ReadListFromDatabase(list);    
-        UpdateDatabaseWithTheList(list);
+        ReadListFromDatabase(list);
+        for (int i = 0; i < list.Count;i++ )
+        {
+            list.ElementAt(i).Days_Since_Last_Visit = (int)(DateTime.Now.Date - list.ElementAt(i).Latest_Visit_Date).TotalDays;
+        }
+            UpdateDatabaseWithTheList(list);
 
 
     }
@@ -151,13 +155,13 @@ public partial class _Default : Page
 
             double averagevote = (double)list.ElementAt(i).Total_Votes / list.ElementAt(i).Total_People_Voted;
             testquery2 +=
-                  list.ElementAt(i).Total_People_Voted+","+
-                   list.ElementAt(i).Total_Votes+","+
-                   Regex.Replace(averagevote.ToString(), @",", ".") + "," +
-                   Regex.Replace(list.ElementAt(i).Expected_Visits_This_Month.ToString(), @",", ".") + "," +
-                      list.ElementAt(i).Days_Since_Last_Visit+");"
-                     
-                ;
+                   list.ElementAt(i).Total_People_Voted + "," +
+                    list.ElementAt(i).Total_Votes + "," +
+                    Regex.Replace(averagevote.ToString(), @",", ".") + "," +
+                    Regex.Replace(list.ElementAt(i).Expected_Visits_This_Month.ToString(), @",", ".") + "," +
+                       list.ElementAt(i).Days_Since_Last_Visit + ");"
+
+                 ;
             SqlCommand com2 = new SqlCommand(testquery2, conn2);
             var command2 = com2.ExecuteReader();
             conn2.Close();
@@ -381,6 +385,8 @@ public partial class _Default : Page
         var first = new DateTime(now.Year, now.Month, 1);
         var start = first.AddMonths(-1);
         var last = first.AddMonths(1);
+        
+
         double howmanydays = (last - first).TotalDays;
 
         double totalvote = 0;
@@ -401,6 +407,18 @@ public partial class _Default : Page
 
     protected void Choose_A_Restaurant(object sender, EventArgs e)
     {
+        int daynumber = 0;
+        for (int i = 0; i < list.Count; i++)
+        {
+            daynumber += list.ElementAt(i).Total_Visits_This_Month;
+        }
+        if(daynumber == 31)
+        {
+            Response.Clear();
+            Response.Write("END OF THE MONTH");
+            return;
+        }
+
         restaurant chosen = new restaurant();
 
 
@@ -416,11 +434,16 @@ public partial class _Default : Page
                 yesterday = list.ElementAt(i);
                 reasons.yesterdaywentdeleted.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
                 list.RemoveAt(i);
-                i--;
+                break;
             }
+        }
+        
+        for (int i = 0; i < list.Count; i++)
+        {
             if (list.ElementAt(i).Days_Since_Last_Visit == 2)
             {
                 daybeforeyesterday = list.ElementAt(i);
+                break;
             }
         }
 
@@ -462,22 +485,88 @@ public partial class _Default : Page
                 i--;
             }
         }
-
-        list = list.OrderBy(o => o.Expected_Visits_This_Month).ToList();
-
-        double maximum = 0;
         for (int i = 0; i < list.Count; i++)
         {
-            maximum += list.ElementAt(i).Expected_Visits_This_Month;
+            reasons.noproblems.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+        }
+
+        //if there is NO restaurant to go! All of them have problems somehow we still have to choose one by ignoring our limitations
+
+        //ONE: NO WEATHER LIMITATION!
+        if(list.Count==0)
+        {
+            Response.Clear();
+            Response.Write("NOT ENOUGH RESTAURANTS TO CHOOSE! Stage 1: Removing weather condition");
+            ReadListFromDatabase(list);
+            if (yesterday.CarorWalk == false || daybeforeyesterday.CarorWalk == false)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list.ElementAt(i).CarorWalk == false)
+                    {
+                        reasons.carorwalkdeletes.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+                        list.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+            for (int i = 0; i < list.Count; i++)
+            {
+                if ((list.ElementAt(i).Expected_Visits_This_Month - (double)list.ElementAt(i).Total_Visits_This_Month) < 1)
+                {
+                    reasons.expectedlimitreacheddeletes.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+                    list.RemoveAt(i);
+                    i--;
+                }
+            }
+            for (int i = 0; i < list.Count; i++)
+            {
+                reasons.noproblems.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+            }
+            
+        }
+
+        //TWO: NO WEATHER LIMITATION & NO CAR LIMITATION!
+        if (list.Count == 0)
+        {
+            Response.Clear();
+            Response.Write("NOT ENOUGH RESTAURANTS TO CHOOSE! Stage 2: Removing car transportation condition");
+            ReadListFromDatabase(list);        
+            for (int i = 0; i < list.Count; i++)
+            {
+                if ((list.ElementAt(i).Expected_Visits_This_Month - (double)list.ElementAt(i).Total_Visits_This_Month) < 1)
+                {
+                    reasons.expectedlimitreacheddeletes.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+                    list.RemoveAt(i);
+                    i--;
+                }
+            }
+            for (int i = 0; i < list.Count; i++)
+            {
+                reasons.noproblems.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+            }
+
+        }
+
+
+
+
+
+        list = list.OrderBy(o => (o.Expected_Visits_This_Month - o.Total_Visits_This_Month)).ToList(); 
+        double maximum = 0;
+        double sofar = 0;
+        for (int i = 0; i < list.Count; i++)
+        {
+            maximum += (list.ElementAt(i).Expected_Visits_This_Month - list.ElementAt(i).Total_Visits_This_Month);
         }
         Random random = new Random();
         System.Double test = random.NextDouble() * (maximum);
         
         for (int i = 0; i < list.Count; i++)
         {
-            if(list.ElementAt(i).Expected_Visits_This_Month < test)
+            if ((sofar + list.ElementAt(i).Expected_Visits_This_Month - list.ElementAt(i).Total_Visits_This_Month) < test)
             {
-
+                sofar += list.ElementAt(i).Expected_Visits_This_Month - list.ElementAt(i).Total_Visits_This_Month;
             }
             else 
             {
@@ -485,12 +574,49 @@ public partial class _Default : Page
                 break;
             }
         }
-
-        for (int i = 0; i < list.Count; i++)
-        {
-            reasons.noproblems.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
-        }
         list = list.OrderBy(o => o.Id).ToList();
+
+        //THREE: NO WEATHER LIMITATION & NO CAR LIMITATION & NO EXPECTED DAY LIMITATION!
+        if (list.Count == 0)
+        {
+            Response.Clear();
+            Response.Write("NOT ENOUGH RESTAURANTS TO CHOOSE! Stage 3: Removing every condition");
+            ReadListFromDatabase(list);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if(list.ElementAt(i).Total_Visits_This_Month>=list.ElementAt(i).Expected_Visits_This_Month)
+                {
+                    list.RemoveAt(i);
+                }
+            }
+            list = list.OrderBy(o => (o.Expected_Visits_This_Month-o.Total_Visits_This_Month)).ToList();
+            maximum = 0;
+            sofar = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                maximum += (list.ElementAt(i).Expected_Visits_This_Month - list.ElementAt(i).Total_Visits_This_Month);
+            }
+            random = new Random();
+            test = random.NextDouble() * (maximum);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if ((sofar + list.ElementAt(i).Expected_Visits_This_Month - list.ElementAt(i).Total_Visits_This_Month) < test)
+                {
+                    sofar += list.ElementAt(i).Expected_Visits_This_Month - list.ElementAt(i).Total_Visits_This_Month;
+                }
+                else
+                {
+                    chosen = list.ElementAt(i);
+                    break;
+                }
+            }
+            
+            list = list.OrderBy(o => o.Id).ToList();
+        }
+        
+
 
         GridView2.Visible = true;
         GridView2.DataSource = list;
@@ -500,14 +626,37 @@ public partial class _Default : Page
            if(list.ElementAt(i).Id == chosen.Id)
            {
                GridView2.SelectedIndex = i;
+               break;
+           }
+           
+       }
+
+       ReadListFromDatabase(list);
+       for (int i = 0; i < list.Count; i++)
+       {
+           if(list.ElementAt(i).Id == chosen.Id)
+           {
+               list.ElementAt(i).Latest_Visit_Date = DateTime.Now.Date;
+               list.ElementAt(i).Total_Visits_This_Month++;
+               list.ElementAt(i).Days_Since_Last_Visit = 0;
+               
+           }
+           else 
+           {
+               list.ElementAt(i).Days_Since_Last_Visit = (int)(DateTime.Now.Date - list.ElementAt(i).Latest_Visit_Date).TotalDays;
            }
        }
+
+       UpdateDatabaseWithTheList(list);
+
+
 
 
     }
 
     protected void ReadListFromDatabase(List<restaurant> list)
     {
+        list.Clear();
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RestaurantsConnectionString"].ConnectionString);
         conn.Open();
         string testquery = "select * from Restaurants";
