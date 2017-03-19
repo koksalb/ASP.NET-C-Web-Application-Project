@@ -407,12 +407,15 @@ public partial class _Default : Page
 
     protected void Choose_A_Restaurant(object sender, EventArgs e)
     {
-        int daynumber = 0;
+        double daynumber = 0;
         for (int i = 0; i < list.Count; i++)
         {
             daynumber += list.ElementAt(i).Total_Visits_This_Month;
         }
-        if(daynumber == 31)
+        
+
+        double howmany = (new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1) -  new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)).TotalDays;
+        if (daynumber == howmany)
         {
             Response.Clear();
             Response.Write("END OF THE MONTH");
