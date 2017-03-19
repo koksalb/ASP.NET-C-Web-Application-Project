@@ -14,6 +14,7 @@ using System.Drawing;
 using System.IO;
 using System.Web.UI.HtmlControls;
 using System.Text.RegularExpressions;
+using Excel = Microsoft.Office.Interop.Excel;
 
 
 public partial class _Default : Page
@@ -357,6 +358,8 @@ public partial class _Default : Page
 
     protected void btnUpload_Click(object sender, EventArgs e)
     {
+        List<restaurant> imported_list = new List<restaurant>();
+
         if (FileUpload1.HasFile)
         {
             string FileName = Path.GetFileName(FileUpload1.PostedFile.FileName);
@@ -365,20 +368,27 @@ public partial class _Default : Page
 
             string FilePath = Server.MapPath(FolderPath + FileName);
             FileUpload1.SaveAs(FilePath);
+            //FolderPath = "C:\\Users\\Buse Çolak\\Desktop\\Book1.xlsx";
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(FilePath);
+            Excel._Worksheet xlWorksheet = (Excel._Worksheet)xlWorkbook.Sheets[1];
+            Excel.Range xlRange = xlWorksheet.UsedRange;
 
-            string conStr = "";
-            switch (Extension)
+            int rowCount = xlRange.Rows.Count;
+            int colCount = xlRange.Columns.Count;
+
+           
+            
+
+            for (int i = 3; i <= rowCount+2; i++)
             {
-                case ".xls": //Excel 97-03
-                    conStr = ConfigurationManager.ConnectionStrings["Excel03ConString"]
-                             .ConnectionString;
-                    break;
-                case ".xlsx": //Excel 07
-                    conStr = ConfigurationManager.ConnectionStrings["Excel07ConString"]
-                              .ConnectionString;
-                    break;
+                restaurant temp = new restaurant();
+                temp.Id = i;
+                string _tm;
+                _tm = xlRange.Rows[i].ToString();
+                int a;
+
             }
-            conStr = String.Format(conStr, FilePath, false);
         }
     }
     

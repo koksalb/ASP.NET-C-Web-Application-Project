@@ -222,7 +222,8 @@
         <br />
         <label>Upload a file to update ratings.</label>
         <br />
-        <asp:FileUpload ID="FileUpload1" runat="server" />
+        <asp:FileUpload ID="FileUpload1" runat="server" BorderColor="#6666FF" BorderWidth="2px" />
+        <br />
 <asp:Button class="btn btn-primary" ID="btnUpload" runat="server" Text="Upload"
             OnClick="btnUpload_Click" /></div>
     

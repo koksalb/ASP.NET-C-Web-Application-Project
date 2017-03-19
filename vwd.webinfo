@@ -1,0 +1,11 @@
+﻿<?xml version="1.0"?>
+<!-- 
+  Visual Studio global web project settings.
+-->
+<VisualWebDeveloper>
+
+  <comReferences>
+    <reference Name="interop.microsoft.office.core" ID="{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}\2.7\0"/>
+    <reference Name="interop.microsoft.office.interop.excel" ID="{00020813-0000-0000-C000-000000000046}\1.8\0"/>
+  </comReferences>
+</VisualWebDeveloper>
