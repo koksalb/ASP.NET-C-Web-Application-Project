@@ -46,21 +46,21 @@
 
 
      <br />
-                 <asp:Label ID="Labelweather" runat="server" Text="Label"></asp:Label>
+                 <asp:Label ID="Labelweather" runat="server" Text=""></asp:Label>
                  <br />
-                 <asp:Label ID="Labelcarorwalk" runat="server" Text="Label"></asp:Label>
+                 <asp:Label ID="Labelcarorwalk" runat="server" Text=""></asp:Label>
                  <br />
-                 <asp:Label ID="Labelexpected" runat="server" Text="Label"></asp:Label>
+                 <asp:Label ID="Labelexpected" runat="server" Text=""></asp:Label>
                  <br />
-                 <asp:Label ID="Labelnoproblem" runat="server" Text="Label"></asp:Label>
+                 <asp:Label ID="Labelnoproblem" runat="server" Text=""></asp:Label>
                  <br />
                  <br />
                  
-        <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" />
+        <asp:Button class="btn btn-primary" ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" />
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:Button ID="New_Month" runat="server" Text="Start New Month" OnClick="Initialise_New_Month" />
+        <asp:Button class="btn btn-success" ID="New_Month" runat="server" Text="Start New Month" OnClick="Initialise_New_Month" />
                   &nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:Button ID="ChooseButton" runat="server" Text="Choose a restaurant" OnClick="Choose_A_Restaurant" />
+        <asp:Button class="btn btn-warning" ID="ChooseButton" runat="server" Text="Choose a restaurant" OnClick="Choose_A_Restaurant" />
 
 
                  <br />
@@ -152,7 +152,7 @@
 &nbsp;&nbsp;
             <input id="Txt_mail" dir="ltr" type="email" runat="server"/><br />
             <br />
-            <asp:Button ID="Button_Insert" runat="server" Text="Insert" OnClick="Button_Insert_Click" />
+            <asp:Button class="btn btn-primary" ID="Button_Insert" runat="server" Text="Insert" OnClick="Button_Insert_Click" />
         </div>
 
                 </td>
@@ -162,7 +162,7 @@
 
                     <asp:Label ID="Txt_mail_todelete" runat="server" CssClass="auto-style2" Text="E-mail to delete" Width="70%"></asp:Label>
                     &nbsp;
-                    <asp:Button ID="Button_Delete" runat="server" Text="Delete" OnClick="Button_Delete_Click"  Width="20%" Enabled="False"/>
+                    <asp:Button class="btn btn-warning" ID="Button_Delete" runat="server" Text="Delete" OnClick="Button_Delete_Click"  Width="20%" Enabled="False"/>
                     <br />
                 </td>
             </tr>
@@ -231,7 +231,7 @@
         <label>Upload a file to update ratings.</label>
         <br />
         <asp:FileUpload ID="FileUpload1" runat="server" />
-<asp:Button ID="btnUpload" runat="server" Text="Upload"
+<asp:Button class="btn btn-primary" ID="btnUpload" runat="server" Text="Upload"
             OnClick="btnUpload_Click" /></div>
     
     <br />
