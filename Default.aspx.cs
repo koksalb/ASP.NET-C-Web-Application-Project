@@ -20,6 +20,25 @@ public partial class _Default : Page
 {
     List<restaurant> list = new List<restaurant>();
     Boolean weather;//false if it is good, true if it is not good meaning there is a weather problem!
+    deletionreasons reasons = new deletionreasons();
+
+    public class deletionreasons
+    {
+        public List<String> weatherdeletes { get; set; }
+        public List<String> carorwalkdeletes { get; set; }
+        public List<String> yesterdaywentdeleted { get; set; }
+        public List<String> expectedlimitreacheddeletes { get; set; }
+
+        public List<String> noproblems { get; set; }
+        public deletionreasons()
+        {
+            weatherdeletes = new List<String>();
+            carorwalkdeletes = new List<String>();
+            yesterdaywentdeleted = new List<String>();
+            expectedlimitreacheddeletes = new List<String>();
+            noproblems = new List<String>();
+        }
+    }
     public class restaurant
     {
 
@@ -81,37 +100,8 @@ public partial class _Default : Page
         }
 
 
-        
 
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RestaurantsConnectionString"].ConnectionString);
-        conn.Open();
-        string testquery = "select * from Restaurants";
-
-        SqlCommand com = new SqlCommand(testquery, conn);
-        using (var command = com.ExecuteReader())
-        {
-            while (command.Read())
-            {
-                restaurant temp = new restaurant();
-                temp.Id = command.GetInt32(0);
-                temp.Place_Name = command.GetString(1);
-                temp.Affectedfromweather = command.GetBoolean(2);
-                temp.Latest_Visit_Date = command.GetDateTime(3);
-                temp.Total_Visits_This_Month = command.GetInt32(4);
-                temp.CarorWalk = command.GetBoolean(5);
-                temp.Total_People_Voted = command.GetInt32(6);
-                temp.Total_Votes=command.GetInt32(7);
-                temp.Average_Vote = command.GetDouble(8);
-                temp.Expected_Visits_This_Month = command.GetDouble(9);
-                temp.Days_Since_Last_Visit=command.GetInt32(10);
-                
-                list.Add(temp);
-
-
-            }
-        }
-        conn.Close();
-        
+        ReadListFromDatabase(list);    
         UpdateDatabaseWithTheList(list);
 
 
@@ -411,17 +401,139 @@ public partial class _Default : Page
 
     protected void Choose_A_Restaurant(object sender, EventArgs e)
     {
+        restaurant chosen = new restaurant();
+
+
+        restaurant yesterday = new restaurant();
+        restaurant daybeforeyesterday = new restaurant();
+        yesterday.CarorWalk = true;
+        daybeforeyesterday.CarorWalk = true;
+
         for (int i = 0; i < list.Count; i++)
         {
-            if(weather==true)
+            if (list.ElementAt(i).Days_Since_Last_Visit == 1)
             {
-                if(list.ElementAt(i).Affectedfromweather)
+                yesterday = list.ElementAt(i);
+                reasons.yesterdaywentdeleted.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+                list.RemoveAt(i);
+                i--;
+            }
+            if (list.ElementAt(i).Days_Since_Last_Visit == 2)
+            {
+                daybeforeyesterday = list.ElementAt(i);
+            }
+        }
+
+        //if there is a weather problem. remove every restaurant that gets effected from the weather
+        if (weather == true)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list.ElementAt(i).Affectedfromweather)
                 {
+                    reasons.weatherdeletes.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
                     list.RemoveAt(i);
                     i--;
                 }
             }
         }
+
+        //If we used car yesterday or the day before. We cant choose a restaurant with carorwalt=false today. so we remove them
+        if (yesterday.CarorWalk==false || daybeforeyesterday.CarorWalk==false)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list.ElementAt(i).CarorWalk == false)
+                    {
+                        reasons.carorwalkdeletes.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+                        list.RemoveAt(i);
+                        i--;
+                    }
+            }
+        }
+
+        //we have to remove restaurants that reached their expected visit limit for this month. (Expectedvisits - total visits < 1 is not okay!)
+        for (int i = 0; i < list.Count; i++)
+        {
+            if ((list.ElementAt(i).Expected_Visits_This_Month - (double)list.ElementAt(i).Total_Visits_This_Month) < 1)
+            {
+                reasons.expectedlimitreacheddeletes.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+                list.RemoveAt(i);
+                i--;
+            }
+        }
+
+        list = list.OrderBy(o => o.Expected_Visits_This_Month).ToList();
+
+        double maximum = 0;
+        for (int i = 0; i < list.Count; i++)
+        {
+            maximum += list.ElementAt(i).Expected_Visits_This_Month;
+        }
+        Random random = new Random();
+        System.Double test = random.NextDouble() * (maximum);
         
+        for (int i = 0; i < list.Count; i++)
+        {
+            if(list.ElementAt(i).Expected_Visits_This_Month < test)
+            {
+
+            }
+            else 
+            {
+                chosen = list.ElementAt(i);
+                break;
+            }
+        }
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            reasons.noproblems.Add(Regex.Replace(list.ElementAt(i).Place_Name, @"\s", "").ToString());
+        }
+        list = list.OrderBy(o => o.Id).ToList();
+
+        GridView2.Visible = true;
+        GridView2.DataSource = list;
+        GridView2.DataBind();
+       for (int i = 0; i < list.Count; i++)
+        {
+           if(list.ElementAt(i).Id == chosen.Id)
+           {
+               GridView2.SelectedIndex = i;
+           }
+       }
+
+
+    }
+
+    protected void ReadListFromDatabase(List<restaurant> list)
+    {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RestaurantsConnectionString"].ConnectionString);
+        conn.Open();
+        string testquery = "select * from Restaurants";
+
+        SqlCommand com = new SqlCommand(testquery, conn);
+        using (var command = com.ExecuteReader())
+        {
+            while (command.Read())
+            {
+                restaurant temp = new restaurant();
+                temp.Id = command.GetInt32(0);
+                temp.Place_Name = command.GetString(1);
+                temp.Affectedfromweather = command.GetBoolean(2);
+                temp.Latest_Visit_Date = command.GetDateTime(3);
+                temp.Total_Visits_This_Month = command.GetInt32(4);
+                temp.CarorWalk = command.GetBoolean(5);
+                temp.Total_People_Voted = command.GetInt32(6);
+                temp.Total_Votes = command.GetInt32(7);
+                temp.Average_Vote = command.GetDouble(8);
+                temp.Expected_Visits_This_Month = command.GetDouble(9);
+                temp.Days_Since_Last_Visit = command.GetInt32(10);
+                list.Add(temp);
+
+
+            }
+        }
+        conn.Close();
     }
 }
