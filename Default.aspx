@@ -49,6 +49,8 @@
         <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Button ID="New_Month" runat="server" Text="Start New Month" OnClick="Initialise_New_Month" />
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+        <asp:Button ID="ChooseButton" runat="server" Text="Choose a restaurant" OnClick="Choose_A_Restaurant" />
     </div>
             
         </div>

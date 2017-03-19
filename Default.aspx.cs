@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 public partial class _Default : Page
 {
     List<restaurant> list = new List<restaurant>();
+    Boolean weather;//false if it is good, true if it is not good meaning there is a weather problem!
     public class restaurant
     {
 
@@ -69,6 +70,15 @@ public partial class _Default : Page
             tblWeather.Visible = true;
 
         }
+       
+        if (lblDescription.Text.ToString().Contains("rain") || lblDescription.Text.ToString().Contains("snow"))
+        {
+            weather = true;//weatherproblemexist         
+        }
+        else
+        {
+            weather = false;//goodweather           
+        }
 
 
         
@@ -101,7 +111,7 @@ public partial class _Default : Page
             }
         }
         conn.Close();
-
+        
         UpdateDatabaseWithTheList(list);
 
 
@@ -399,4 +409,19 @@ public partial class _Default : Page
         UpdateDatabaseWithTheList(list);
     }
 
+    protected void Choose_A_Restaurant(object sender, EventArgs e)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            if(weather==true)
+            {
+                if(list.ElementAt(i).Affectedfromweather)
+                {
+                    list.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+        
+    }
 }
