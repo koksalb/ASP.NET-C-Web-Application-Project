@@ -11,9 +11,15 @@ public partial class WeatherPage : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        
+        
+        
 
+    }
+    protected void GetWeatherInfo(object sender, EventArgs e)
+    {
         string appId = "a8210c3d0e052d04991c174e73ec64b0";
-        string url = string.Format("http://api.openweathermap.org/data/2.5/forecast/daily?q={0}&units=metric&cnt=1&APPID={1}", "Istanbul", appId);
+        string url = string.Format("http://api.openweathermap.org/data/2.5/forecast/daily?q={0}&units=metric&cnt=1&APPID={1}", txtCity.Text.Trim(), appId);
         using (WebClient client = new WebClient())
         {
             string json = client.DownloadString(url);
@@ -31,8 +37,8 @@ public partial class WeatherPage : System.Web.UI.Page
             tblWeather.Visible = true;
 
         }
-
     }
+
 
 
     public class WeatherInfo

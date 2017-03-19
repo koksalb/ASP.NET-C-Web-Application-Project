@@ -9,7 +9,8 @@
 <body>
     <form id="form1" runat="server">
  <div>
-   
+   <asp:TextBox ID="txtCity" runat="server" Text="Istanbul" />
+<asp:Button ID= "button1" Text="Get Weather Information" runat="server" OnClick="GetWeatherInfo" />
 <table id="tblWeather" runat="server" border="0" cellpadding="0" cellspacing="0"
     visible="false">
     <tr>
