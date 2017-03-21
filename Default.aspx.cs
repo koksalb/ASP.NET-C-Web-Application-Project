@@ -175,52 +175,13 @@ public partial class _Default : Page
 
     }
 
-    protected void Button_Insert_Click(object sender, EventArgs e)
-    {
-
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["maillistconnectionstring"].ConnectionString);
-        conn.Open();
-
-        string testquery = "INSERT INTO maillist (Name,Surname,Email) Values (" +
-
-           " '" + Txt_name.Value + "' " + ", " +
-
-            " '" + Txt_Surname.Value + "' " + ", " +
-
-            " '" + Txt_mail.Value + "' " + ");"
-               ;
-
-        SqlCommand com = new SqlCommand(testquery, conn);
-        var command = com.ExecuteReader();
-
-        conn.Close();
-        maillistgrid.DataBind();
-
-    }
-    protected void Button_Delete_Click(object sender, EventArgs e)
-    {
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["maillistconnectionstring"].ConnectionString);
-        conn.Open();
-
-        string testquery = "DELETE FROM maillist WHERE Email=" +
-             " '" + Txt_mail_todelete.Text + "' " + ";";
-        SqlCommand com = new SqlCommand(testquery, conn);
-        var command = com.ExecuteReader();
-        conn.Close();
-        maillistgrid.DataBind();
-        maillistgrid.SelectedIndex = -1;
-        Txt_mail_todelete.Text = "E-mail to delete";
-        Button_Delete.Enabled = false;
-    }
+    
+   
 
 
 
 
-    protected void maillistgrid_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        Txt_mail_todelete.Text = maillistgrid.SelectedRow.Cells[3].Text;
-        Button_Delete.Enabled = true;
-    }
+    
     protected void send_email()
     {
         
@@ -356,41 +317,7 @@ public partial class _Default : Page
     }
 
 
-    protected void btnUpload_Click(object sender, EventArgs e)
-    {
-        List<restaurant> imported_list = new List<restaurant>();
-
-        if (FileUpload1.HasFile)
-        {
-            string FileName = Path.GetFileName(FileUpload1.PostedFile.FileName);
-            string Extension = Path.GetExtension(FileUpload1.PostedFile.FileName);
-            string FolderPath = ConfigurationManager.AppSettings["FolderPath"];
-
-            string FilePath = Server.MapPath(FolderPath + FileName);
-            FileUpload1.SaveAs(FilePath);
-            //FolderPath = "C:\\Users\\Buse Çolak\\Desktop\\Book1.xlsx";
-            Excel.Application xlApp = new Excel.Application();
-            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(FilePath);
-            Excel._Worksheet xlWorksheet = (Excel._Worksheet)xlWorkbook.Sheets[1];
-            Excel.Range xlRange = xlWorksheet.UsedRange;
-
-            int rowCount = xlRange.Rows.Count;
-            int colCount = xlRange.Columns.Count;
-
-           
-            
-
-            for (int i = 3; i <= rowCount+2; i++)
-            {
-                restaurant temp = new restaurant();
-                temp.Id = i;
-                string _tm;
-                _tm = xlRange.Rows[i].ToString();
-                int a;
-
-            }
-        }
-    }
+    
     
 
     protected void Initialise_New_Month(object sender, EventArgs e)
