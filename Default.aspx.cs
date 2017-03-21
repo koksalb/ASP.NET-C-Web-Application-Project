@@ -350,6 +350,16 @@ public partial class _Default : Page
 
     protected void Choose_A_Restaurant(object sender, EventArgs e)
     {
+        bool didyoupickarestauranttoday = false;
+        for (int i = 0; i < list.Count; i++)
+        {
+            if(list.ElementAt(i).Days_Since_Last_Visit==0)
+            {
+                didyoupickarestauranttoday = true;
+            }
+        }
+        if (didyoupickarestauranttoday==false)
+        {
         double daynumber = 0;
         for (int i = 0; i < list.Count; i++)
         {
@@ -659,7 +669,11 @@ public partial class _Default : Page
 
        send_email();
 
-
+}
+        else
+        {
+            Response.Write("You have picked a restaurant today! Come back tomorrow!");
+        }
     }
 
     protected void ReadListFromDatabase(List<restaurant> list)
