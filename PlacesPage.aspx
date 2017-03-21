@@ -8,7 +8,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div style="height: 281px; width: 1087px">
+    <div class ="row">
     
         <asp:SqlDataSource ID="SqlDataSource_Restaurants" runat="server" ConnectionString="<%$ ConnectionStrings:RestaurantsConnectionString %>" SelectCommand="SELECT * FROM [Restaurants]"></asp:SqlDataSource>
         <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" BackColor="#DEBA84" BorderColor="#DEBA84" BorderStyle="None" BorderWidth="1px" CellPadding="3" CellSpacing="2" DataKeyNames="Id" DataSourceID="SqlDataSource_Restaurants">
@@ -38,21 +38,17 @@
     
         
     </div>
-    <p>
-        &nbsp;</p>
-    <p>
-        &nbsp;</p>
-    <p>
-        &nbsp;</p>
-    <p>
-        &nbsp;</p>
-    <p>
+    
+        <div class ="row">
+            <br />
+            <br />
        <input id="File1" type="file" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <asp:Button ID="Button2" runat="server" Text="Import Excel File" OnClick="Import_Excel" /> &nbsp;&nbsp;&nbsp;&nbsp; <asp:Button ID="Export_Excel_Button" runat="server" Text="Export Excel File" OnClick="Export_Excel" /></p>
-    <p>
+   
         &nbsp;</p>
-    <p>
+   
         <asp:Button ID="New_Month" runat="server" Text="Start New Month" OnClick="New_Month_Click" />
-        </p> 
+        
+        </div>
     </form>
     </body>
 </html>
