@@ -219,7 +219,8 @@ public partial class PlacesPage : System.Web.UI.Page
         }
         for (int i = 0; i < list.Count; i++)
         {
-            list.ElementAt(i).Expected_Visits_This_Month = howmanydays * list.ElementAt(i).Total_Votes / totalvote;
+            list.ElementAt(i).Average_Vote = list.ElementAt(i).Total_Votes / totalvote;
+            list.ElementAt(i).Expected_Visits_This_Month = howmanydays * list.ElementAt(i).Average_Vote;
 
         }
         UpdateDatabaseWithTheList(list);

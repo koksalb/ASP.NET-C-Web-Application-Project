@@ -107,7 +107,9 @@ public partial class _Default : Page
         for (int i = 0; i < list.Count;i++ )
         {
             list.ElementAt(i).Days_Since_Last_Visit = (int)(DateTime.Now.Date - list.ElementAt(i).Latest_Visit_Date).TotalDays;
+                     
         }
+
             UpdateDatabaseWithTheList(list);
 
 
